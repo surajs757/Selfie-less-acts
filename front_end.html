@@ -1,0 +1,581 @@
+<html>
+<title>SELFIE LESS ACTS</title>
+<head>
+	
+	<style>
+	* {
+		font-family: "Source Sans Pro", sans-serif;
+	}
+	.white {
+		color:white;
+	}
+	.tab {
+	  overflow: hidden;
+	  border: 1px solid #ccc;
+	  background-color: #ffcd14;
+	}
+	button {
+		border:;
+		background-color: #ffcd14;
+	}
+	.tab button {
+	  background-color: #ffcd14;
+	  float: left;
+	  border: none;
+	  outline: none;
+	  cursor: pointer;
+	  padding: 14px 16px;
+	  transition: 0.3s;
+	  font-size: 17px;
+	}
+
+	.tab button:hover {
+	  background-color: #edc01a;
+	}
+
+	.tab button.active {
+	  background-color: #e0b518;
+	}
+
+	.tabcontent {
+	  display: none;
+	  padding: 6px 12px;
+	  border: 1px solid #ccc;
+	  border-top: none;
+	}
+
+	.position {
+		position: relative;
+		left:400px;
+		bottom:40px;
+	}
+
+	.votes {
+		color: #ffcd14;
+		position: relative;
+		left:400px;
+		bottom:60px;
+	}
+
+	.caption {
+		color: white;
+		position: relative;
+		left:300px;
+		bottom:200px;
+	}
+
+	.aid {
+		color: white;
+		position: relative;
+		left:300px;
+		bottom:200px;
+	}
+
+	.add_usr {
+		position: absolute;
+		right:10px;
+		top: 50px;
+
+	}
+	.rem_usr {
+		position: absolute;
+		right:10px;
+		top: 80px;
+
+	}
+	div.act .caption {
+		position: relative;
+		top:30px;
+	}
+	div.act .aid {
+		position: relative;
+		/*top:10px;*/
+		left:10px;
+	}
+	div.act .votes {
+		position: relative;
+		bottom:50px;
+		
+	}
+	div.act .position {
+		position: relative;
+		left:310px;
+		bottom:80px;
+		height:20px;
+		width:50px;
+	}
+	div.act .image {
+		position: relative;
+		top:20px;
+		left:5px;
+	}
+	div.act .remove {
+		position: relative;
+		left:800px;
+		bottom:80px;
+	}
+	</style>
+
+</head>
+<body background="img-bg-01.jpg">
+	<div  class="white">
+	<center><h1>Selfie Less Acts</h1></center>
+	<h2><p>Select Category</p></h2>
+	<button class="add_usr" onclick="add_user()"><b>Add new User</b></button>
+	<button class="rem_usr" onclick="rem_user()"><b>Remove existing User</b></button>
+</div>
+
+<button onclick="addcategory()"><b>Add new Category</b></button>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<button onclick="remcategory()"><b>Remove Category</b></button>
+
+
+<br/><br/>
+	<div class="tab">
+	  <!--<button class="tablinks" onclick="openCity(event, 'London')"><b>Category 1</b></button>
+	  <button class="tablinks" onclick="openCity(event, 'Paris')"><b>Category 2</b></button>-->
+
+	  <button onclick="showcategories()"><b>Show all Categories</b></button>
+	</div>
+
+	<div id="London" class="tabcontent">
+		<br/>
+		<button class="upload_button"><b>Upload an act</b></button><br/><br/><br/>
+		<div class="Image1_1"><br/>
+			  <img src="download.jpg" style="width:250px;height:200px;">
+			  <div class="votes">0 likes</div>
+			  <button class="position" onclick="vote(this)"><b>upvote</b></button>&nbsp;&nbsp;<button class="position"><b>remove</b></button>
+			  <div class="caption">Kindness in the rain</div>  	
+		</div>
+
+		<div class="Image1_2">
+			  <img src="download2.jpg" style="width:250px;height:250px;">
+			  <div class="votes">0 likes</div>
+			  <button class="position" onclick="vote(this)"><b>upvote</b></button>&nbsp;&nbsp;<button class="position"><b>remove</b></button>
+			  <div class="caption">Helping an injured military person makes me feel patriotic for some reason</div> 	
+		</div>
+	</div>
+
+	<div id="Paris" class="tabcontent"><br/>
+	  <button class="upload_button"><b>Upload an act</b></button><br/><br/><br/><br/>
+		<div class="Image2_1">
+			  <img src="download1.jpg" style="width:250px;height:200px;">
+			  <div class="votes">0 likes</div>
+			  <button class="position" onclick="vote(this)"><b>upvote</b></button>&nbsp;&nbsp;<button class="position"><b>remove</b></button>
+			  <div class="caption">I guess stray dogs are hungrier than we think they are</div>
+		</div>	
+		<div class="Image2_2">
+			  <img src="download3.jpg" style="width:250px;height:200px;">
+			  <div class="votes">0 likes</div>
+			  <button class="position" onclick="vote(this)"><b>upvote</b></button>&nbsp;&nbsp;<button class="position"><b>remove</b></button> 
+			  <div class="caption">Floods affect creatures other than ourselves as well, more so actually</div>	
+		</div>
+	</div>
+	<div class="bd"></div><br/>
+	<div class="white">Upload an act &nbsp;&nbsp;<input type="file" id="imagetbuploaded" accept="image/jpeg,image/png" onchange="uploadact(this)"></div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script>
+
+
+		var global_url = "http://asignment4-1437484401.us-east-1.elb.amazonaws.com";           //change here to server ip required.
+		var global_users_url = "http://3.210.151.222/api/v1/users";         //change here to users-server ip required.
+		var catebeingdisplayed="";
+
+		function openCity(evt, cityName) {
+		  alert("fn called");
+		  var i, tabcontent, tablinks;
+		  tabcontent = document.getElementsByClassName("tabcontent");
+		  for (i = 0; i < tabcontent.length; i++) {
+		    tabcontent[i].style.display = "none";
+		  }
+		  tablinks = document.getElementsByClassName("tablinks");
+		  for (i = 0; i < tablinks.length; i++) {
+		    tablinks[i].className = tablinks[i].className.replace(" active", "");
+		  }
+		  document.getElementById(cityName).style.display = "block";
+		  evt.currentTarget.className += " active";
+		}
+		
+		function vote(e){
+			
+			//var j=document.querySelector("."+e.parentNode.className+" .votes");
+			var k=e.parentNode.children[3];
+			var id=k.textContent.split(" ")[2];
+			console.log("hello"+id);
+			var xhr = new XMLHttpRequest();
+			//var url = "http://13.233.183.238:5000/api/v1/acts/upvote";
+			var url = global_url + "/api/v1/acts/upvote";
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.onreadystatechange = function () {
+				//alert(xhr.status);
+				
+			    if (xhr.readyState === 4 && xhr.status === 200) {
+			        
+			        //alert("success");
+
+			    }
+			};
+			var arr=[id];
+			var data = JSON.stringify(arr);
+			xhr.send(data);
+			var j=e.parentNode.children[2];
+			var n = Number(j.textContent.split(" ")[0]);
+			n=n+1;
+			var str= n + " likes";	
+			j.textContent= str;
+			//document.write("<?php $a=10;");
+ //totally sanitized
+ 			//var fs=require('fs');
+		}
+
+		function add_user(){
+			var user_name = prompt("Enter Username");
+			var password = prompt("Enter password");
+			//alert(typeof(user_name));
+			var credentials = [{ 
+				'username': user_name,
+				'password': password
+			}];
+			//console.log(credentials);
+			
+			var xhr = new XMLHttpRequest();
+			var url = global_users_url;
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.onreadystatechange = function () {
+				//alert(xhr.status);
+				
+			    if (xhr.readyState === 4 && xhr.status === 201) {
+			        
+			        alert("success");
+			    }
+			};
+			var data = JSON.stringify({"username": user_name, "password": password});
+			xhr.send(data);
+		}
+
+		function rem_user(){
+			var usr_tbd = prompt("Enter user to be deleted");
+			
+
+			var url = global_users_url+"/"+usr_tbd;
+			var xhr = new XMLHttpRequest();
+			xhr.open("DELETE", url, true);
+			xhr.onload = function () {
+				//var users = JSON.parse(xhr.responseText);
+				if (xhr.readyState == 4 && xhr.status == "200") {
+					alert("User successfully deleted");
+				} 
+				else{
+					alert("error request, user does not exist");
+				}
+			}
+			xhr.send(null);
+		}
+		var flag=0;
+		function showcategories(){
+			flag=1;
+			var parent=document.querySelector("div.tab");
+			console.log(parent.children.length)
+			for(var i=parent.children.length-1;i>=0;i--){
+				var child=parent.children[i];
+				parent.removeChild(child);
+			}
+
+			var url = global_url + "/api/v1/categories";
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", url, true);
+			xhr.onload = function () {
+				var retrive = JSON.parse(xhr.responseText);
+				if (xhr.readyState == 4 && xhr.status == "200") {
+					//alert(Object.keys(categories)[0]);
+					var categories=Object.keys(retrive);
+					var arr=[];
+					for(var i=0;i<categories.length;i++){
+						//console.log(categories[i]);
+						var newtab=document.createElement("button");
+						newtab.innerHTML="<b>"+categories[i]+"</b>";
+						newtab.className="tablinks";
+						var bar=document.querySelector("div.tab");
+						//console.log("hello");
+						bar.appendChild(newtab);
+						arr.push(newtab);
+						//newtab.addEventListener("click", listacts(this), false);
+						newtab.onclick=function(){
+							listacts(this);
+						};
+						
+						//<button class="tablinks" onclick="openCity(event, 'London')"><b>Category 1</b></button>
+					}
+
+
+					//console.table(categories);
+				} 
+				else{
+					alert("error");
+				}
+			}
+			xhr.send(null);
+		}
+
+		function addcategory(){
+			var nam=prompt("Enter name of category");
+			var xhr = new XMLHttpRequest();
+			var url = global_ur+"/api/v1/categories";
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.onreadystatechange = function () {
+				//alert(xhr.status);
+			    if (xhr.readyState === 4 && xhr.status === 201) {
+			        
+			        alert("success");
+			        if(flag==1){
+			        showcategories();
+			    	}
+			    }
+			};
+			var data = JSON.stringify([nam]);
+			xhr.send(data);
+		}
+
+		function remcategory(){
+			var nam=prompt("Enter name of category to be deleted");
+			var xhr = new XMLHttpRequest();
+			var url = global_url+"/api/v1/categories/"+nam;
+			xhr.open("DELETE", url, true);
+			xhr.onreadystatechange = function () {
+				//alert(xhr.status);
+			    if (xhr.readyState === 4 && xhr.status === 200) {
+			        
+			        alert("category deleted");
+
+			        if(flag==1){
+			        showcategories();
+			    	}
+			    }
+			   
+			};
+			xhr.send(null);
+			
+
+		}
+
+		function listacts(ele){
+			
+			cat_name=ele.textContent;
+			catebeingdisplayed=cat_name;
+
+			var bigdiv=document.querySelector("div.bd");
+			for(var f=bigdiv.children.length-1;f>=0;f--){
+				var tbd=bigdiv.children[f];
+				bigdiv.removeChild(tbd);
+			}
+
+
+			var url = global_url+"/api/v1/categories/"+cat_name+"/acts";
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", url, true);
+			xhr.onload = function () {
+				//console.log(cat_name);
+				var retrive = JSON.parse(xhr.responseText);
+				//console.log(xhr.responseText);
+				if(xhr.status === "404"){alert("Too many acts to load");}
+				if (xhr.readyState == 4 && xhr.status == "200") {
+
+					var bd=document.querySelector("div.bd");
+					//document.querySelector("div.tab").parentNode.appendChild(bd);
+					for(var i=0;i<retrive.length;i++){
+						enc_img=retrive[i].imgB64;
+						console.log(i);
+						actid=retrive[i].actId;
+						cpn=retrive[i].caption;
+						votes=retrive[i].upvotes;
+						//var img = document.createElement("img");
+						//img.setAttribute('src', "data:image/jpg;base64," + enc_img);
+						var cp=document.createElement("p");
+						cp.setAttribute("class","caption");
+						cp.textContent=cpn;
+						var d=document.createElement("div");
+						d.setAttribute("class","act");
+						//d.appendChild(img);
+						d.appendChild(cp);
+						var d2=document.createElement("div");
+						d2.setAttribute("class","votes");
+						d2.textContent=votes+" votes";
+						var btn=document.createElement("button");
+						btn.setAttribute("class","position");
+						btn.innerHTML="upvote";
+						btn.style.fontWeight="bold";
+						btn.style.width="70px";
+						btn.onclick=function(){
+							vote(this);
+						}
+						var im=document.createElement("img");
+						im.setAttribute("class","image");
+						im.src='data:image/jpeg;base64,'+enc_img;
+						im.style.height='150px';
+						im.style.width='250px';
+						d.appendChild(im);
+						d.appendChild(d2);
+						var aid=document.createElement("p");
+						aid.setAttribute("class","aid");
+						aid.textContent="actid : "+actid;
+						d.appendChild(aid);
+						var rm=document.createElement("button");
+						rm.setAttribute("class","remove");
+						rm.innerHTML="Remove Act";
+						rm.style.fontWeight="bold";
+						rm.onclick=function(){
+							remove(this);
+						}
+						d.appendChild(rm);
+						d.appendChild(btn);
+						bd.appendChild(d);
+					}
+
+
+
+				}
+
+
+
+			};
+
+			xhr.send(null);
+			//console.log(cat_name);
+
+		}
+
+		function remove(e){
+
+			var k=e.parentNode.children[3];
+			var id=k.textContent.split(" ")[2];
+
+
+			var url = global_url+"/api/v1/acts/"+id;
+
+			var xhr = new XMLHttpRequest();
+			xhr.open("DELETE", url, true);
+			xhr.onload = function () {
+				//var users = JSON.parse(xhr.responseText);
+				if (xhr.readyState == 4 && xhr.status == "200") {
+					//alert("User successfully deleted");
+					var t=document.querySelector(".tab");
+					for(var x=t.children.length-1;x>=0;x--){
+						if(t.children[x].textContent==catebeingdisplayed){
+							listacts(t.children[x]);
+							break;
+						}
+					}
+				}
+			}
+			xhr.send(null);
+			
+			
+		}
+		function upload(str, timestamp, caption, id, user, cat_name){
+			var str1=str.replace("data:image/png;base64,","");
+			var str2=str1.replace("data:image/jpeg;base64,","");
+			console.log(str2);
+			var xhr = new XMLHttpRequest();
+			var url = global_url+"/api/v1/acts";
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.onreadystatechange = function () {
+				//alert(xhr.status);
+				
+			    if (xhr.readyState === 4 && xhr.status === 201) {
+
+			    	if(catebeingdisplayed==cat_name){
+				        var t=document.querySelector(".tab");
+						for(var x=t.children.length-1;x>=0;x--){
+							if(t.children[x].textContent==catebeingdisplayed){
+								listacts(t.children[x]);
+								break;
+							}
+						}
+					}
+			        //alert("success");
+			    }
+			};
+			var data = JSON.stringify({"username": user, "timestamp": timestamp, "actId": id, "caption": caption, "categoryName": cat_name, "imgB64": str2 });
+			xhr.send(data);
+
+		}
+		function uploadact(){
+			//console.log(ele);
+
+			var id=prompt("Enter act id");
+			var user=prompt("Enter username");
+			var caption=prompt("Enter caption for image");
+			var cat_name=prompt("Enter category for which you want to upload an act");
+			var ts = new Date();
+			var completedate=ts.toDateString();
+			var yr=completedate.split(" ")[3];
+			var date=completedate.split(" ")[2];
+			var mon=completedate.split(" ")[1];
+			var month;
+			if(mon=="Jan"){month="01"}
+			else if(mon=="Feb"){month="02"}
+			else if(mon=="Mar"){month="03"}
+			else if(mon=="Apr"){month="04"}
+			else if(mon=="May"){month="05"}
+			else if(mon=="Jun"){month="06"}
+			else if(mon=="Jul"){month="07"}
+			else if(mon=="Aug"){month="08"}
+			else if(mon=="Sep"){month="09"}
+			else if(mon=="Oct"){month="10"}
+			else if(mon=="Nov"){month="11"}
+			else{month="12"}
+			
+			var completetime=ts.toTimeString();
+			var time=completetime.split(" ")[0];
+			var hr=time.split(":")[0]; 
+			var mins=time.split(":")[1];
+			var sec=time.split(":")[2];
+
+			var timestamp=date+"-"+month+"-"+yr+":"+sec+"-"+mins+"-"+hr;
+			console.log(timestamp);
+
+			function getBase64(file) {
+			   var reader = new FileReader();
+			   reader.readAsDataURL(file);
+			   reader.onload = function () {
+			   	 var str= reader.result;
+			   	 upload(str,timestamp,caption,id,user,cat_name);
+			     //console.log(str);
+			   };
+			   reader.onerror = function (error) {
+			     console.log('Error: ', error);
+			   };
+			}
+
+			// You can then get the data URL when the image got loaded:
+			//var img = document.querySelector('img')
+			var files=document.querySelector("#imagetbuploaded").files;
+			//var srce=file.value;
+			var imag=document.createElement("img");
+			//imag.src=srce;
+			console.log(files[0]);
+			var dataUrl = getBase64(files[0]);
+
+			//console.log(dataUrl)
+			
+
+			
+
+		}
+		/*var ts = new Date();
+			alert(ts.toTimeString());
+			var completedate=ts.toDateString();
+			var yr=completedate.split(" ")[3];
+			var date=completedate.split(" ")[2];
+			alert(date+yr);
+		*/
+	</script>
+	   
+</body>
+</html> 
+	
+
